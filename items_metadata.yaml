@@ -13,10 +13,3 @@ samples:
   description: Sample 2
   licenseInfo: ""
   tags: ["Data Science", "GIS", "Spark"]
-- title: Your First Notebook
-  url: https://www.arcgis.com/home/item.html?id=467bc6806c9e40dc8222744e0937b80c
-  path: ./notebooks/your_first_notebook.ipynb
-  snippet: Your First Notebook
-  description: Sample 3
-  licenseInfo: ""
-  tags: ["Data Science", "GIS", "Spark"]
