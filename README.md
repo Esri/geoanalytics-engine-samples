@@ -2,10 +2,6 @@
 
 Here are a set of PySpark notebook samples using [ArcGIS GeoAnalytics Engine](https://developers.arcgis.com/geoanalytics/).
 
-## Contents
-* **notebooks** - Workflows and tutorials contained in PySpark notebooks that can be run in any Spark environment where 
-  GeoAnalytics Engine is installed.
-* **scripts** - Installation scripts and other non-notebook examples.
 
 ## Instructions
 
@@ -28,16 +24,17 @@ Here are a set of PySpark notebook samples using [ArcGIS GeoAnalytics Engine](ht
 
 ## Resources
 * [Product Information](https://www.esri.com/en-us/arcgis/products/arcgis-geoanalytics-engine/overview)
-* [Guide](http://help.arcgis.com/en/webapi/javascript/arcgis/index.html)
+* [Guide](https://developers.arcgis.com/geoanalytics/)
 * [API Reference](https://developers.arcgis.com/geoanalytics/api-reference/index.html)
 * [Esri Community](https://community.esri.com/t5/geoanalytics-engine/ct-p/geoanalytics-engine)
-* [Blog: ArcGIS GeoAnalytics Engine in Databricks](https://www.databricks.com/blog/2022/12/07/arcgis-geoanalytics-engine-databricks.html)
-* [Blog: Big Data Analytics with Amazon EMR](https://aws.amazon.com/blogs/apn/big-data-analytics-with-amazon-emr-and-esri-arcgis-geoanalytics-engine/)
-* [Blog: Spatial analysis in Azure Synapse Analytics](https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/spatial-analysis-in-azure-synapse-analytics-with-arcgis/ba-p/3728969)
+* Blogs:
+     * [ArcGIS GeoAnalytics Engine in Databricks](https://www.databricks.com/blog/2022/12/07/arcgis-geoanalytics-engine-databricks.html)
+     * [Big Data Analytics with Amazon EMR](https://aws.amazon.com/blogs/apn/big-data-analytics-with-amazon-emr-and-esri-arcgis-geoanalytics-engine/)
+     * [Spatial analysis in Azure Synapse Analytics](https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/spatial-analysis-in-azure-synapse-analytics-with-arcgis/ba-p/3728969)
 
 ## Issues
 
-Find a bug or want to request a new feature?  Please let us know by submitting an issue.
+Find a bug or want to request a new feature? Please let us know by submitting an issue.
 
 ## Contributing
 
