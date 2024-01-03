@@ -1,14 +1,14 @@
 samples:
 - title: Create an Overland Search Area
   url: https://www.arcgis.com/home/item.html?id=27017ef3b3864e74ae1b7587719a3391
-  path: ./notebooks/CreateAnOverlandSearchArea.ipynb
+  path: ./notebooks/guide/CreateAnOverlandSearchArea.ipynb
   snippet: Create an Overland Search Area
   description: Sample 1
   licenseInfo: ""
   tags: ["Data Science", "GIS", "Spark"]
 - title: Identify River Intersections
   url: https://www.arcgis.com/home/item.html?id=467bc6806c9e40dc8222744e0937b80c
-  path: ./notebooks/IdentifyRiverIntersections.ipynb
+  path: ./notebooks/guide/IdentifyRiverIntersections.ipynb
   snippet: Identify River Intersections
   description: Sample 2
   licenseInfo: ""
