@@ -6,22 +6,6 @@
 from json import dumps
 from string import Template
 import math
-from IPython.display import display, HTML
-import uuid
-import base64
-import geoanalytics.sql.functions as ST
-import geoanalytics.raster.functions as RT
-from geoanalytics.sql import PointUDT, MultiPointUDT, LinestringUDT, PolygonUDT, SpatialReference
-import pyspark.sql.functions as F
-
-# Disclaimers: 
-# * This script is provided as a sample as-is 
-# * This script uses the ArcGIS Maps SDK for Javascript. Please refer to the specific
-#   terms of use for the SDK: https://developers.arcgis.com/javascript/latest/licensing/
-
-from json import dumps
-from string import Template
-import math
 from IPython.display import display, HTML, Markdown
 import uuid
 import base64
