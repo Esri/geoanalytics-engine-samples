@@ -61,6 +61,11 @@ class EsriJSMap:
         map.add_layer(self, renderer=renderer, label=label, popup=popup, max_records=max_records, fields=fields, **render_args)
         map.display()
 
+    def display_parquet_layer(self, *, basemap="gray-vector", basemap_sr=4326, width="100%", height="800px", renderer=None, label=None, popup=None):
+        map = EsriJSMap(basemap=basemap, basemap_sr=basemap_sr, width=width, height=height)
+        map.add_parquet_layer(self, renderer=renderer, label=label, popup=popup)
+        map.display()
+
     @staticmethod
     def register_extensions():
         # Add display method to DataFrame for additional convenience
@@ -72,8 +77,9 @@ class EsriJSMap:
         self.basemap_sr = basemap_sr
         self.width = width
         self.height = height
-        self.sdk_version = "5.0"
+        self.sdk_version = "5.1"
         self.layers = []
+        self.parquet_layers = []
         self.debug_html = debug_html
         self.div_id = "inline_map_" + str(uuid.uuid4()).split("-")[0]
 
@@ -130,6 +136,40 @@ class EsriJSMap:
             "extent" : extent
         })
 
+    def add_parquet_layer(self, urls, *, renderer=None, label=None, popup=None):
+        if label is not None:
+            if isinstance(label, dict):
+                pass
+            elif isinstance(label, str):
+                label = Labels.field(label)
+            else:
+                raise ValueError("Unexpected value for 'label'. Expecting a string field name or a dictionary of label properties to pass directly to 'layer.labelingInfo' in Javascript")
+
+        if popup is not None:
+            if isinstance(popup, dict):
+                pass
+            elif isinstance(popup, list | tuple):
+                popup = Popups.fields(*popup)
+            else:
+                raise ValueError("Unexpected value for 'popup'. Expecting a list of string field names or a dictionary of properties to pass directly to 'layer.popupTemplate' in Javascript")
+
+        if renderer is not None and not isinstance(renderer, dict):
+            raise ValueError("Unexpected value for 'renderer'. Expecting a dictionary of renderer properties to pass directly to 'layer.renderer' in Javascript")
+
+        if isinstance(urls, str):
+            urls = [urls]
+        elif isinstance(urls, tuple):
+            urls = list(urls)
+        elif not isinstance(urls, list):
+            raise ValueError("'urls' must be a string or a list/tuple of strings")
+
+        self.parquet_layers.append({
+            "urls": urls,
+            "renderer": "null" if renderer is None else dumps(renderer),
+            "labelingInfo": "null" if label is None else dumps(label),
+            "popupTemplate": "null" if popup is None else dumps(popup),
+        })
+
     def display(self):
         """
         Generate and display the HTML for the map.
@@ -143,15 +183,16 @@ class EsriJSMap:
             width: $width;
           }
         </style>
-        <script type="module" src="https://js.arcgis.com/5.0/"></script>
+        <script type="module" src="https://js.arcgis.com/5.1/"></script>
         <script type="module">
         
             // Wait until the loader has initialized $$arcgis. Necessary due to how we're injecting scripts into
             // the DOM via cell execution.
             while (!window.$$arcgis) await new Promise(r => setTimeout(r, 25));
 
-            const [FeatureLayer, Point, Multipoint, Polyline, Polygon] = await $$arcgis.import([
+            const [FeatureLayer, ParquetLayer, Point, Multipoint, Polyline, Polygon] = await $$arcgis.import([
               "@arcgis/core/layers/FeatureLayer.js",
+              "@arcgis/core/layers/ParquetLayer.js",
               "@arcgis/core/geometry/Point.js",
               "@arcgis/core/geometry/Multipoint.js",
               "@arcgis/core/geometry/Polyline.js",
@@ -162,7 +203,9 @@ class EsriJSMap:
             await viewElement.viewOnReady();
             const map = viewElement.map;
             const view = viewElement.view;
-            view.extent = $extent_js
+            if ($extent_js !== null) {
+              view.extent = $extent_js
+            }
             
             $layers_js
         </script>
@@ -297,11 +340,39 @@ class EsriJSMap:
 
             self._merge_extent(extent, layer["extent"])
 
-        # Pad extent by 20%
-        pad_width = (extent[2] - extent[0]) * .1
-        pad_height = (extent[3] - extent[1]) * .1
-        
-        extent_js = dumps({"type": "extent", "xmin": extent[0] - pad_width, "ymin": extent[1] - pad_height, "xmax": extent[2] + pad_width, "ymax": extent[3] + pad_height})
+        for i, layer in enumerate(self.parquet_layers):
+            layer_js = f"""
+            
+            const parquetLayer{i} = new ParquetLayer({{
+                urls: {layer['urls']},
+            }});
+
+            const parquetRenderer{i} = {layer['renderer']}
+            if (parquetRenderer{i} != null) {{
+              parquetLayer{i}.renderer = parquetRenderer{i}
+            }}
+
+            const parquetLabelingInfo{i} = {layer['labelingInfo']}
+            if (parquetLabelingInfo{i} != null) {{
+              parquetLayer{i}.labelingInfo = parquetLabelingInfo{i}
+            }}
+
+            const parquetPopupTemplate{i} = {layer['popupTemplate']}
+            if (parquetPopupTemplate{i} != null) {{
+              parquetLayer{i}.popupTemplate = parquetPopupTemplate{i}
+            }}
+            
+            map.add(parquetLayer{i})
+            """
+            layers_js.append(layer_js)
+
+        if any(math.isnan(v) for v in extent):
+            extent_js = "null"
+        else:
+            # Pad extent by 20%
+            pad_width = (extent[2] - extent[0]) * .1
+            pad_height = (extent[3] - extent[1]) * .1
+            extent_js = dumps({"type": "extent", "xmin": extent[0] - pad_width, "ymin": extent[1] - pad_height, "xmax": extent[2] + pad_width, "ymax": extent[3] + pad_height})
 
         return ("\n".join(layers_js), extent_js)
 
