@@ -9,7 +9,7 @@ import math
 from IPython.display import display, HTML, Markdown
 import uuid
 import base64
-import geoanalytics.sql.functions as ST
+import geoanalytics_fabric.sql.functions as ST
 from geoanalytics.sql import PointUDT, MultiPointUDT, LinestringUDT, PolygonUDT, SpatialReference
 import pyspark.sql.functions as F
 
