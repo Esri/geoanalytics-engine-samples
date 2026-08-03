@@ -10,7 +10,7 @@ from IPython.display import display, HTML, Markdown
 import uuid
 import base64
 import geoanalytics_fabric.sql.functions as ST
-from geoanalytics.sql import PointUDT, MultiPointUDT, LinestringUDT, PolygonUDT, SpatialReference
+from geoanalytics_fabric.sql import PointUDT, MultiPointUDT, LinestringUDT, PolygonUDT, SpatialReference
 import pyspark.sql.functions as F
 
 class EsriJSMap:
